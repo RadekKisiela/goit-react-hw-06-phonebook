@@ -1,15 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setContacts } from '../redux/actions';
 
-const useLocalStorage = (key, initialValue) => {
-  const [storedContacts, setStoredContacts] = useState(() => {
+const useLocalStorage = key => {
+  const dispatch = useDispatch();
+  const storedContacts = useSelector(state => state.contacts);
+
+  useEffect(() => {
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : [];
+      if (item) {
+        const parsedContacts = JSON.parse(item);
+        dispatch(setContacts(parsedContacts));
+      }
     } catch (error) {
       console.log(error);
-      return initialValue;
     }
-  });
+  }, [key, dispatch]);
 
   useEffect(() => {
     try {
@@ -19,7 +26,7 @@ const useLocalStorage = (key, initialValue) => {
     }
   }, [key, storedContacts]);
 
-  return [storedContacts, setStoredContacts];
+  return storedContacts;
 };
 
 export default useLocalStorage;

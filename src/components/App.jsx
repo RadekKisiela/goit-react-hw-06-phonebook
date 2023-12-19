@@ -1,41 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addContact,
+  deleteContact,
+  setFilter,
+  setContacts,
+} from '../redux/actions';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
 import useLocalStorage from './useLocalStorage';
 
-export const App = () => {
-  const initialContacts = [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ];
-  const [contacts, setContacts] = useLocalStorage('contacts', initialContacts);
+const App = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
 
-  const [filter, setFilter] = useState('');
+  const storedContacts = useLocalStorage('contacts');
 
-  const addContact = contact => {
-    const isContactExists = contacts.some(
-      c => c.name.toLowerCase() === contact.name.toLowerCase()
-    );
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(storedContacts));
+    dispatch(setContacts(storedContacts));
+  }, [storedContacts, dispatch]);
 
-    if (isContactExists) {
-      alert(`${contact.name} is already in contacts.`);
-      return;
-    }
-
-    setContacts(prevContacts => [...prevContacts, contact]);
+  const addContactHandler = (name, number) => {
+    dispatch(addContact(name, number));
   };
-
-  const deleteContact = id => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    );
+  const deleteContactHandler = id => {
+    dispatch(deleteContact(id));
   };
-
-  const handleFilterChange = newFilter => {
-    setFilter(newFilter);
+  const setFilterHandler = value => {
+    dispatch(setFilter(value));
   };
 
   const filteredContacts = contacts.filter(contact =>
@@ -55,13 +50,13 @@ export const App = () => {
       }}
     >
       <h1>Phonebook</h1>
-      <ContactForm addContact={addContact} />
+      <ContactForm addContact={addContactHandler} />
       <h2>Contacts</h2>
-      <Filter filter={filter} onChangeFilter={handleFilterChange} />
+      <Filter filter={filter} onChangeFilter={setFilterHandler} />
       {filteredContacts.length > 0 ? (
         <ContactList
           contacts={filteredContacts}
-          onDeleteContact={deleteContact}
+          onDeleteContact={deleteContactHandler}
         />
       ) : (
         <p>No contacts found.</p>
@@ -69,3 +64,5 @@ export const App = () => {
     </div>
   );
 };
+
+export default App;

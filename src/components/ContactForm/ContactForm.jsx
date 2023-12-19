@@ -6,21 +6,60 @@ import PropTypes from 'prop-types';
 const ContactForm = ({ addContact }) => {
   const [formData, setFormData] = useState({ name: '', number: '' });
   const { name, number } = formData;
+  const [nameError, setNameError] = useState('');
+  const [numberError, setNumberError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  // Funkcja do walidacji pola imienia
+  const validateName = () => {
+    if (!name.trim()) {
+      setNameError('Name is required');
+    } else if (!/^[A-Za-z.'\- ]+$/.test(name)) {
+      setNameError(
+        'Name can only contain letters, apostrophe, dash, and spaces'
+      );
+    } else {
+      setNameError('');
+    }
+  };
+
+  // Funkcja do walidacji pola numeru telefonu
+  const validateNumber = () => {
+    if (!number.trim()) {
+      setNumberError('Phone number is required');
+    } else if (
+      !/^\+?\d{1,4}?\s?\(?\d{1,4}?\)?\s?\d{1,4}\s?\d{1,4}\s?\d{1,9}$/.test(
+        number
+      )
+    ) {
+      setNumberError('Invalid phone number format');
+    } else {
+      setNumberError('');
+    }
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
+    setSubmitted(true);
 
-    const contact = {
-      id: nanoid(),
-      name,
-      number,
-    };
+    // Walidacja przed dodaniem kontaktu
+    validateName();
+    validateNumber();
 
-    addContact(contact);
-    setFormData({
-      name: '',
-      number: '',
-    });
+    // Sprawdź, czy są błędy walidacji przed dodaniem kontaktu
+    if (!nameError && !numberError) {
+      const contact = {
+        id: nanoid(),
+        name,
+        number,
+      };
+
+      addContact(contact);
+      setFormData({
+        name: '',
+        number: '',
+      });
+    }
   };
 
   const handleChange = e => {
@@ -41,6 +80,7 @@ const ContactForm = ({ addContact }) => {
         value={name}
         onChange={handleChange}
       />
+      {submitted && nameError && <p className={css.error}>{nameError}</p>}
       <label className={css.inputLabel}>Number</label>
       <input
         className={css.inputField}
@@ -52,6 +92,7 @@ const ContactForm = ({ addContact }) => {
         value={number}
         onChange={handleChange}
       />
+      {submitted && numberError && <p className={css.error}>{numberError}</p>}
       <button className={css.btn} type="submit">
         Add Number
       </button>
