@@ -14,7 +14,10 @@ import useLocalStorage from './useLocalStorage';
 const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
+  const filter = useSelector(state => {
+    const filterValue = state.filter;
+    return String(filterValue);
+  });
 
   const storedContacts = useLocalStorage('contacts');
 
@@ -36,6 +39,7 @@ const App = () => {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
+  console.log('filteredContacts:', filteredContacts);
 
   return (
     <div

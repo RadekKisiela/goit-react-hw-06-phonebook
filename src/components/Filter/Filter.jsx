@@ -3,6 +3,11 @@ import css from './Filter.module.css';
 import PropTypes from 'prop-types';
 
 const Filter = ({ filter, onChangeFilter }) => {
+  const handleChange = e => {
+    const value = e.target.value;
+    onChangeFilter(typeof value === 'string' ? value : '');
+  };
+
   return (
     <label>
       Find contact by name
@@ -10,7 +15,7 @@ const Filter = ({ filter, onChangeFilter }) => {
         className={css.inputFilter}
         type="text"
         value={filter}
-        onChange={e => onChangeFilter(e.target.value)}
+        onChange={handleChange}
         placeholder="Search contact"
       />
     </label>
