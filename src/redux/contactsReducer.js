@@ -15,10 +15,7 @@ const contactsReducer = createReducer(initialState, builder => {
       return state.filter(contact => contact.id !== action.payload);
     })
     .addCase(setFilter, (state, action) => {
-      return {
-        ...state,
-        status: action.payload,
-      };
+      state.status = action.payload;
     });
 });
 
