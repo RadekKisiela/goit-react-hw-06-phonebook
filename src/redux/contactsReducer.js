@@ -1,18 +1,24 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { setContacts, addContact, deleteContact } from './actions';
+import { setContacts, addContact, deleteContact, setFilter } from './actions';
 
-const initialState = '';
+const initialState = [];
 
 const contactsReducer = createReducer(initialState, builder => {
   builder
     .addCase(setContacts, (state, action) => {
-      state = action.payload;
+      return (state = action.payload);
     })
     .addCase(addContact, (state, action) => {
       state.push(action.payload);
     })
     .addCase(deleteContact, (state, action) => {
       return state.filter(contact => contact.id !== action.payload);
+    })
+    .addCase(setFilter, (state, action) => {
+      return {
+        ...state,
+        status: action.payload,
+      };
     });
 });
 
