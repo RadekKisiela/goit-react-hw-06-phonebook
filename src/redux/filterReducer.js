@@ -5,7 +5,7 @@ const initialState = '';
 
 const filterReducer = createReducer(initialState, builder => {
   builder.addCase(setFilter, (state, action) => {
-    state.filter = action.payload;
+    state = action.payload;
   });
 });
 

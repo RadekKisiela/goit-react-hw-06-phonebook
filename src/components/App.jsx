@@ -39,7 +39,6 @@ const App = () => {
   const filteredContacts = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
-  console.log('filteredContacts:', filteredContacts);
 
   return (
     <div

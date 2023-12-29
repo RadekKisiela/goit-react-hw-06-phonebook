@@ -1,26 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { setContacts, addContact, deleteContact, setFilter } from './actions';
+import { setContacts, addContact, deleteContact } from './actions';
 
 const initialState = '';
 
 const contactsReducer = createReducer(initialState, builder => {
   builder
     .addCase(setContacts, (state, action) => {
-      state.contacts = action.payload;
+      state = action.payload;
     })
     .addCase(addContact, (state, action) => {
-      state.contacts.push(action.payload);
+      state.push(action.payload);
     })
     .addCase(deleteContact, (state, action) => {
-      state.contacts = state.contacts.filter(
-        contact => contact.id !== action.payload
-      );
-    })
-    .addCase(setFilter, (state, action) => {
-      state.filter =
-        action.payload !== undefined && action.payload !== null
-          ? action.payload
-          : '';
+      state = state(contact => contact.id !== action.payload);
     });
 });
 
