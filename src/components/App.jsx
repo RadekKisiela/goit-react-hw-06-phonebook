@@ -22,8 +22,12 @@ const App = () => {
   const storedContacts = useLocalStorage('contacts');
 
   useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(storedContacts));
-    dispatch(setContacts(storedContacts));
+    try {
+      localStorage.setItem('contacts', JSON.stringify(storedContacts));
+      dispatch(setContacts(storedContacts));
+    } catch (error) {
+      console.error('Error handling local storage:', error);
+    }
   }, [storedContacts, dispatch]);
 
   const addContactHandler = (name, number) => {
