@@ -1,11 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  addContact,
-  deleteContact,
-  setFilter,
-  setContacts,
-} from '../redux/actions';
+import { addContact, deleteContact, setFilter } from '../redux/actions';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
@@ -13,22 +8,10 @@ import useLocalStorage from './useLocalStorage';
 
 const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
   const filter = useSelector(state => {
     const filterValue = state.filter;
     return String(filterValue);
   });
-
-  const storedContacts = useLocalStorage('contacts');
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('contacts', JSON.stringify(storedContacts));
-      dispatch(setContacts(storedContacts));
-    } catch (error) {
-      console.error('Error handling local storage:', error);
-    }
-  }, [storedContacts, dispatch]);
 
   const addContactHandler = (name, number) => {
     dispatch(addContact(name, number));
@@ -40,7 +23,9 @@ const App = () => {
     dispatch(setFilter(value));
   };
 
-  const filteredContacts = contacts.filter(contact =>
+  const storedContacts = useLocalStorage('contacts');
+
+  const filteredContacts = storedContacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
 

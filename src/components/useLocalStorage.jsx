@@ -11,12 +11,15 @@ const useLocalStorage = key => {
       const item = localStorage.getItem(key);
       if (item) {
         const parsedContacts = JSON.parse(item);
+        if (JSON.stringify(parsedContacts) !== JSON.stringify(storedContacts)) {
+          localStorage.setItem(key, JSON.stringify(storedContacts));
+        }
         dispatch(setContacts(parsedContacts));
       }
     } catch (error) {
       console.log(error);
     }
-  }, [key, dispatch]);
+  }, [key, dispatch, storedContacts]);
 
   useEffect(() => {
     try {
